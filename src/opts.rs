@@ -43,7 +43,7 @@ macro_rules! impl_field {
             )*
             pub fn [< $name >](mut self, $name: $ty)-> Self
             {
-                self.params.insert($param_name, serde_json::json!($name));
+                self.params.insert($param_name.into(), serde_json::json!($name));
                 self
             }
         }
@@ -62,7 +62,7 @@ macro_rules! impl_vec_field {
             where
                 S: serde::Serialize
             {
-                self.params.insert($param_name, serde_json::json!($name.into_iter().collect::<Vec<_>>()));
+                self.params.insert($param_name.into(), serde_json::json!($name.into_iter().collect::<Vec<_>>()));
                 self
             }
         }
@@ -74,7 +74,7 @@ macro_rules! impl_vec_field {
             )*
             pub fn [< $name  >](mut self, $name: impl IntoIterator<Item = $ty>)-> Self
             {
-                self.params.insert($param_name, serde_json::json!($name.into_iter().collect::<Vec<_>>()));
+                self.params.insert($param_name.into(), serde_json::json!($name.into_iter().collect::<Vec<_>>()));
                 self
             }
         }
@@ -91,7 +91,7 @@ macro_rules! impl_str_field {
             )*
             pub fn [< $name >](mut self, $name: impl serde::Serialize)-> Self
             {
-                self.params.insert($param_name, serde_json::json!($name));
+                self.params.insert($param_name.into(), serde_json::json!($name));
                 self
             }
         }
@@ -108,7 +108,7 @@ macro_rules! impl_str_enum_field {
             )*
             pub fn [< $name >](mut self, $name: $ty)-> Self
             {
-                self.params.insert($param_name, serde_json::json!($name.to_string()));
+                self.params.insert($param_name.into(), serde_json::json!($name.to_string()));
                 self
             }
         }
@@ -125,7 +125,7 @@ macro_rules! impl_url_str_field {
             )*
             pub fn [< $name >](mut self, $name: impl Into<String>)-> Self
             {
-                self.params.insert($param_name, $name.into());
+                self.params.insert($param_name.into(), $name.into());
                 self
             }
         }
@@ -141,7 +141,7 @@ macro_rules! impl_url_field {
                 #[doc= $docs]
             )*
             pub fn [< $name >](mut self, $name: $ty)-> Self {
-                self.params.insert($param_name, $name.to_string());
+                self.params.insert($param_name.into(), $name.to_string());
                 self
             }
         }
@@ -160,7 +160,7 @@ macro_rules! impl_url_vec_field {
             where
                 S: Into<String>
             {
-                self.vec_params.insert($param_name, $name.into_iter().map(|s| s.into()).collect());
+                self.vec_params.insert($param_name.into(), $name.into_iter().map(|s| s.into()).collect());
                 self
             }
         }
@@ -176,7 +176,7 @@ macro_rules! impl_url_bool_field {
                 #[doc= $docs]
             )*
             pub fn [< $name >](mut self, $name: bool)-> Self {
-                self.params.insert($param_name, $name.to_string());
+                self.params.insert($param_name.into(), $name.to_string());
                 self
             }
         }
@@ -193,7 +193,7 @@ macro_rules! impl_url_enum_field {
             )*
             pub fn [< $name >](mut self, $name: $ty)-> Self
             {
-                self.params.insert($param_name, $name.to_string());
+                self.params.insert($param_name.into(), $name.to_string());
                 self
             }
         }
@@ -219,7 +219,7 @@ macro_rules! impl_map_field {
                 K: serde::Serialize + Eq + std::hash::Hash,
                 V: serde::Serialize
             {
-                self.params.insert($param_name, $ret);
+                self.params.insert($param_name.into(), $ret);
                 self
             }
         }
@@ -244,7 +244,7 @@ macro_rules! impl_filter_func {
             // structure is a a json encoded object mapping string keys to a list
             // of string values
             self.params
-                .insert("filters", serde_json::to_string(&param).unwrap_or_default());
+                .insert("filters".to_string(), serde_json::to_string(&param).unwrap_or_default());
             self
         }
     };
@@ -309,15 +309,15 @@ macro_rules! define_opts_builder {
             $(
                 #[doc= $docs]
             )*
-            #[derive(serde::Serialize, Debug, Default, Clone)]
+            #[derive(::serde::Deserialize, ::serde::Serialize, Debug, Default, Clone)]
             pub struct [< $name Opts >] {
-                pub(crate) params: std::collections::BTreeMap<&'static str, $ty>,
+                pub(crate) params: std::collections::BTreeMap<String, $ty>,
             }
 
             #[doc = concat!("A builder struct for ", stringify!($name), "Opts.")]
             #[derive(Default, Debug, Clone)]
             pub struct [< $name OptsBuilder >] {
-                pub(crate) params: std::collections::BTreeMap<&'static str, $ty>,
+                pub(crate) params: std::collections::BTreeMap<String, $ty>,
             }
         }
     };
@@ -326,17 +326,17 @@ macro_rules! define_opts_builder {
             $(
                 #[doc= $docs]
             )*
-            #[derive(serde::Serialize, Debug, Default, Clone)]
+            #[derive(::serde::Deserialize, ::serde::Serialize, Debug, Default, Clone)]
             pub struct [< $name Opts >] {
-                pub(crate) params: std::collections::BTreeMap<&'static str, $ty>,
-                pub(crate) vec_params: std::collections::BTreeMap<&'static str, Vec<$ty>>,
+                pub(crate) params: std::collections::BTreeMap<String, $ty>,
+                pub(crate) vec_params: std::collections::BTreeMap<String, Vec<$ty>>,
             }
 
             #[doc = concat!("A builder struct for ", stringify!($name), "Opts.")]
             #[derive(Default, Debug, Clone)]
             pub struct [< $name OptsBuilder >] {
-                pub(crate) params: std::collections::BTreeMap<&'static str, $ty>,
-                pub(crate) vec_params: std::collections::BTreeMap<&'static str, Vec<$ty>>,
+                pub(crate) params: std::collections::BTreeMap<String, $ty>,
+                pub(crate) vec_params: std::collections::BTreeMap<String, Vec<$ty>>,
             }
         }
     }
@@ -426,9 +426,9 @@ macro_rules! impl_opts_required_builder {
             $(
                 #[doc= $docs]
             )*
-            #[derive(serde::Serialize, Debug, Default, Clone)]
+            #[derive(::serde::Deserialize, ::serde::Serialize, Debug, Default, Clone)]
             pub struct [< $name Opts >] {
-                pub(crate) params: std::collections::BTreeMap<&'static str, serde_json::Value>,
+                pub(crate) params: std::collections::BTreeMap<String, serde_json::Value>,
                 [< $param >]: $param_ty,
             }
             impl [< $name Opts >] {
@@ -440,7 +440,7 @@ macro_rules! impl_opts_required_builder {
             #[doc = concat!("A builder struct for ", stringify!($name), "Opts.")]
             #[derive(Default, Debug, Clone)]
             pub struct [< $name OptsBuilder >] {
-                pub(crate) params: std::collections::BTreeMap<&'static str, serde_json::Value>,
+                pub(crate) params: std::collections::BTreeMap<String, serde_json::Value>,
                 [< $param >]: $param_ty,
             }
             impl [< $name OptsBuilder >] {
@@ -451,7 +451,7 @@ macro_rules! impl_opts_required_builder {
                 pub fn new($param: impl Into<$param_ty>) -> Self {
                     let param = $param.into();
                     Self {
-                        params: [($param_key, serde_json::json!(param.clone()))].into(),
+                        params: [($param_key.to_string(), serde_json::json!(param.clone()))].into(),
                         [< $param >]: param,
                     }
                 }
@@ -472,10 +472,10 @@ macro_rules! impl_opts_required_builder {
             $(
                 #[doc= $docs]
             )*
-            #[derive(serde::Serialize, Debug, Default, Clone)]
+            #[derive(::serde::Deserialize, ::serde::Serialize, Debug, Default, Clone)]
             pub struct [< $name Opts >] {
-                pub(crate) params: std::collections::BTreeMap<&'static str, String>,
-                pub(crate) vec_params: std::collections::BTreeMap<&'static str, Vec<String>>,
+                pub(crate) params: std::collections::BTreeMap<String, String>,
+                pub(crate) vec_params: std::collections::BTreeMap<String, Vec<String>>,
                 [< $param >]: $param_ty,
             }
             impl [< $name Opts >] {
@@ -487,8 +487,8 @@ macro_rules! impl_opts_required_builder {
             #[doc = concat!("A builder struct for ", stringify!($name), "Opts.")]
             #[derive(Debug, Clone)]
             pub struct [< $name OptsBuilder >] {
-                pub(crate) params: std::collections::BTreeMap<&'static str, String>,
-                pub(crate) vec_params: std::collections::BTreeMap<&'static str, Vec<String>>,
+                pub(crate) params: std::collections::BTreeMap<String, String>,
+                pub(crate) vec_params: std::collections::BTreeMap<String, Vec<String>>,
                 [< $param >]: $param_ty,
             }
 
@@ -500,7 +500,7 @@ macro_rules! impl_opts_required_builder {
                 pub fn new($param: impl Into<$param_ty>) -> Self {
                     let param = $param.into();
                     Self {
-                        params: [($param_key, param.clone())].into(),
+                        params: [($param_key.to_string(), param.clone())].into(),
                         vec_params: Default::default(),
                         [< $param >]: param,
                     }
