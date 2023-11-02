@@ -1,6 +1,6 @@
 //! Utility functions to handle dates and time.
 
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, TimeZone, Utc};
 use serde::Deserialize;
 
 /// Used for deserialization of UNIX timestamp as chrono DateTime.
@@ -10,7 +10,7 @@ where
 {
     let timestamp = chrono::NaiveDateTime::from_timestamp_opt(i64::deserialize(deserializer)?, 0)
         .unwrap_or_default();
-    Ok(DateTime::<Utc>::from_utc(timestamp, Utc))
+    Ok(Utc.from_utc_datetime(&timestamp))
 }
 
 /// Used for deserialization of nano second timestamp as chrono DateTime.
@@ -24,5 +24,5 @@ where
         (timestamp_nano % 1_000_000_000) as u32,
     )
     .unwrap_or_default();
-    Ok(DateTime::<Utc>::from_utc(timestamp, Utc))
+    Ok(Utc.from_utc_datetime(&timestamp))
 }
