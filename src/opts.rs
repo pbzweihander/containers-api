@@ -311,13 +311,13 @@ macro_rules! define_opts_builder {
             )*
             #[derive(::serde::Deserialize, ::serde::Serialize, Debug, Default, Clone)]
             pub struct [< $name Opts >] {
-                pub(crate) params: std::collections::BTreeMap<String, $ty>,
+                pub params: std::collections::BTreeMap<String, $ty>,
             }
 
             #[doc = concat!("A builder struct for ", stringify!($name), "Opts.")]
             #[derive(Default, Debug, Clone)]
             pub struct [< $name OptsBuilder >] {
-                pub(crate) params: std::collections::BTreeMap<String, $ty>,
+                pub params: std::collections::BTreeMap<String, $ty>,
             }
         }
     };
@@ -328,15 +328,15 @@ macro_rules! define_opts_builder {
             )*
             #[derive(::serde::Deserialize, ::serde::Serialize, Debug, Default, Clone)]
             pub struct [< $name Opts >] {
-                pub(crate) params: std::collections::BTreeMap<String, $ty>,
-                pub(crate) vec_params: std::collections::BTreeMap<String, Vec<$ty>>,
+                pub params: std::collections::BTreeMap<String, $ty>,
+                pub vec_params: std::collections::BTreeMap<String, Vec<$ty>>,
             }
 
             #[doc = concat!("A builder struct for ", stringify!($name), "Opts.")]
             #[derive(Default, Debug, Clone)]
             pub struct [< $name OptsBuilder >] {
-                pub(crate) params: std::collections::BTreeMap<String, $ty>,
-                pub(crate) vec_params: std::collections::BTreeMap<String, Vec<$ty>>,
+                pub params: std::collections::BTreeMap<String, $ty>,
+                pub vec_params: std::collections::BTreeMap<String, Vec<$ty>>,
             }
         }
     }
@@ -428,7 +428,7 @@ macro_rules! impl_opts_required_builder {
             )*
             #[derive(::serde::Deserialize, ::serde::Serialize, Debug, Default, Clone)]
             pub struct [< $name Opts >] {
-                pub(crate) params: std::collections::BTreeMap<String, serde_json::Value>,
+                pub params: std::collections::BTreeMap<String, serde_json::Value>,
                 [< $param >]: $param_ty,
             }
             impl [< $name Opts >] {
@@ -474,8 +474,8 @@ macro_rules! impl_opts_required_builder {
             )*
             #[derive(::serde::Deserialize, ::serde::Serialize, Debug, Default, Clone)]
             pub struct [< $name Opts >] {
-                pub(crate) params: std::collections::BTreeMap<String, String>,
-                pub(crate) vec_params: std::collections::BTreeMap<String, Vec<String>>,
+                pub params: std::collections::BTreeMap<String, String>,
+                pub vec_params: std::collections::BTreeMap<String, Vec<String>>,
                 [< $param >]: $param_ty,
             }
             impl [< $name Opts >] {
@@ -487,8 +487,8 @@ macro_rules! impl_opts_required_builder {
             #[doc = concat!("A builder struct for ", stringify!($name), "Opts.")]
             #[derive(Debug, Clone)]
             pub struct [< $name OptsBuilder >] {
-                pub(crate) params: std::collections::BTreeMap<String, String>,
-                pub(crate) vec_params: std::collections::BTreeMap<String, Vec<String>>,
+                pub params: std::collections::BTreeMap<String, String>,
+                pub vec_params: std::collections::BTreeMap<String, Vec<String>>,
                 [< $param >]: $param_ty,
             }
 
